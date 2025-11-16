@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAllEvents } from "@/app/mockRequest";
 
 interface Ticket {
   name: string;
@@ -37,12 +36,7 @@ const AVAILABLE_CHANNELS = [
   "Resident Advisor",
 ];
 
-export async function generateStaticParams() {
-  const events = getAllEvents();
-  return events.map((event) => ({ slug: event.slug }));
-}
-
-export default function EventPage({ params }: { params: { slug: string } }) {
+export default function CreateEventPage() {
   const router = useRouter();
 
   const [form, setForm] = useState<EventPayload>({
@@ -80,15 +74,39 @@ export default function EventPage({ params }: { params: { slug: string } }) {
     }));
   }
 
+  function removeTicket(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      tickets: prev.tickets.filter((_, i) => i !== index),
+    }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    await fetch("/api/events/create", {
-      method: "POST",
-      body: JSON.stringify(form),
-    });
+    // Generate slug from name if not provided
+    const finalForm = {
+      ...form,
+      slug: form.slug || form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    };
 
-    router.push("/crm/events");
+    try {
+      const response = await fetch("/api/events/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(finalForm),
+      });
+
+      if (response.ok) {
+        router.push("/crm/events");
+      } else {
+        console.error("Failed to create event");
+      }
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
   }
 
   return (
@@ -96,14 +114,22 @@ export default function EventPage({ params }: { params: { slug: string } }) {
       <h1 className="text-3xl font-bold mb-6">Create Event</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-
         {/* BASIC INFO */}
         <div className="space-y-3">
-          <label className="block font-semibold">Event Name</label>
+          <label className="block font-semibold">Event Name *</label>
           <input
             className="w-full border p-2 rounded"
             value={form.name}
             onChange={(e) => updateField("name", e.target.value)}
+            required
+          />
+
+          <label className="block font-semibold">Slug</label>
+          <input
+            className="w-full border p-2 rounded"
+            value={form.slug}
+            onChange={(e) => updateField("slug", e.target.value)}
+            placeholder="auto-generated-from-name"
           />
 
           <label className="block font-semibold">Description</label>
@@ -111,6 +137,7 @@ export default function EventPage({ params }: { params: { slug: string } }) {
             className="w-full border p-2 rounded"
             value={form.description}
             onChange={(e) => updateField("description", e.target.value)}
+            rows={3}
           />
 
           <label className="block font-semibold">Lineup</label>
@@ -123,31 +150,38 @@ export default function EventPage({ params }: { params: { slug: string } }) {
         </div>
 
         {/* DATE */}
-        <div className="space-y-3">
-          <label className="block font-semibold">Start Date</label>
-          <input
-            type="datetime-local"
-            className="w-full border p-2 rounded"
-            value={form.date}
-            onChange={(e) => updateField("date", e.target.value)}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <label className="block font-semibold">Start Date *</label>
+            <input
+              type="datetime-local"
+              className="w-full border p-2 rounded"
+              value={form.date}
+              onChange={(e) => updateField("date", e.target.value)}
+              required
+            />
+          </div>
 
-          <label className="block font-semibold">End Date</label>
-          <input
-            type="datetime-local"
-            className="w-full border p-2 rounded"
-            value={form.endDate}
-            onChange={(e) => updateField("endDate", e.target.value)}
-          />
+          <div className="space-y-3">
+            <label className="block font-semibold">End Date *</label>
+            <input
+              type="datetime-local"
+              className="w-full border p-2 rounded"
+              value={form.endDate}
+              onChange={(e) => updateField("endDate", e.target.value)}
+              required
+            />
+          </div>
         </div>
 
         {/* VENUE & MEDIA */}
         <div className="space-y-3">
-          <label className="block font-semibold">Venue</label>
+          <label className="block font-semibold">Venue *</label>
           <input
             className="w-full border p-2 rounded"
             value={form.venue}
             onChange={(e) => updateField("venue", e.target.value)}
+            required
           />
 
           <label className="block font-semibold">Image URL</label>
@@ -155,6 +189,7 @@ export default function EventPage({ params }: { params: { slug: string } }) {
             className="w-full border p-2 rounded"
             value={form.image}
             onChange={(e) => updateField("image", e.target.value)}
+            placeholder="https://example.com/image.jpg"
           />
 
           <label className="block font-semibold">Banner URL</label>
@@ -162,13 +197,16 @@ export default function EventPage({ params }: { params: { slug: string } }) {
             className="w-full border p-2 rounded"
             value={form.banner}
             onChange={(e) => updateField("banner", e.target.value)}
+            placeholder="https://example.com/banner.jpg"
           />
 
           <label className="block font-semibold">Capacity</label>
           <input
+            type="number"
             className="w-full border p-2 rounded"
             value={form.capacity}
             onChange={(e) => updateField("capacity", e.target.value)}
+            placeholder="500"
           />
         </div>
 
@@ -176,7 +214,7 @@ export default function EventPage({ params }: { params: { slug: string } }) {
         <div>
           <label className="block font-semibold mb-2">Status</label>
           <select
-            className="border p-2 rounded"
+            className="border p-2 rounded w-full"
             value={form.status}
             onChange={(e) => updateField("status", e.target.value)}
           >
@@ -189,7 +227,6 @@ export default function EventPage({ params }: { params: { slug: string } }) {
         {/* CHANNELS */}
         <div>
           <label className="block font-semibold mb-2">Publish Channels</label>
-
           <div className="grid grid-cols-2 gap-2">
             {AVAILABLE_CHANNELS.map((channel) => (
               <label key={channel} className="flex items-center gap-2">
@@ -224,18 +261,31 @@ export default function EventPage({ params }: { params: { slug: string } }) {
                 value={ticket.name}
                 onChange={(e) => updateTicket(i, "name", e.target.value)}
               />
-              <input
-                className="w-full border p-2 rounded"
-                placeholder="Price"
-                value={ticket.price}
-                onChange={(e) => updateTicket(i, "price", e.target.value)}
-              />
-              <input
-                className="w-full border p-2 rounded"
-                placeholder="Quantity"
-                value={ticket.quantity}
-                onChange={(e) => updateTicket(i, "quantity", e.target.value)}
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="number"
+                  className="border p-2 rounded"
+                  placeholder="Price"
+                  value={ticket.price}
+                  onChange={(e) => updateTicket(i, "price", e.target.value)}
+                />
+                <input
+                  type="number"
+                  className="border p-2 rounded"
+                  placeholder="Quantity"
+                  value={ticket.quantity}
+                  onChange={(e) => updateTicket(i, "quantity", e.target.value)}
+                />
+              </div>
+              {form.tickets.length > 1 && (
+                <button
+                  type="button"
+                  className="text-red-600 text-sm"
+                  onClick={() => removeTicket(i)}
+                >
+                  Remove Ticket
+                </button>
+              )}
             </div>
           ))}
 
@@ -249,12 +299,21 @@ export default function EventPage({ params }: { params: { slug: string } }) {
         </div>
 
         {/* SUBMIT */}
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg"
-        >
-          Create Event
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="button"
+            className="bg-gray-500 text-white px-6 py-2 rounded-lg"
+            onClick={() => router.push("/crm/events")}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+          >
+            Create Event
+          </button>
+        </div>
       </form>
     </div>
   );
