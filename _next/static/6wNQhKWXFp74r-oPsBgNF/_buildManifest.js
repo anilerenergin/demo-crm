@@ -1,7 +1,12 @@
 self.__BUILD_MANIFEST = {
   "__rewrites": {
     "afterFiles": [],
-    "beforeFiles": [],
+    "beforeFiles": [
+      {
+        "source": "/demo-crm//_next/:path+",
+        "destination": "/demo-crm/_next/:path+"
+      }
+    ],
     "fallback": []
   },
   "sortedPages": [

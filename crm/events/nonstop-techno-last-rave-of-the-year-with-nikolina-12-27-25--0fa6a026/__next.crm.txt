@@ -1,7 +1,7 @@
 1:"$Sreact.fragment"
-2:I[92825,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/64c0a5e3a0354479.js"],"ClientSegmentRoot"]
-3:I[95290,["/_next/static/chunks/2662ff657666a8c6.js","/_next/static/chunks/2ae3c29b84a2a333.js"],"default"]
-4:I[39756,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/64c0a5e3a0354479.js"],"default"]
-5:I[37457,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/64c0a5e3a0354479.js"],"default"]
-0:{"buildId":"aXQOK5fvJekObat3YwHEm","rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/_next/static/chunks/2662ff657666a8c6.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/2ae3c29b84a2a333.js","async":true}]],["$","$L2",null,{"Component":"$3","slots":{"children":["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]},"serverProvidedParams":{"params":{},"promises":["$@6"]}}]]}],"loading":null,"isPartial":false}
+2:I[92825,["/demo-crm/_next/static/chunks/ff1a16fafef87110.js","/demo-crm/_next/static/chunks/64c0a5e3a0354479.js"],"ClientSegmentRoot"]
+3:I[95290,["/demo-crm/_next/static/chunks/2662ff657666a8c6.js","/demo-crm/_next/static/chunks/2ae3c29b84a2a333.js"],"default"]
+4:I[39756,["/demo-crm/_next/static/chunks/ff1a16fafef87110.js","/demo-crm/_next/static/chunks/64c0a5e3a0354479.js"],"default"]
+5:I[37457,["/demo-crm/_next/static/chunks/ff1a16fafef87110.js","/demo-crm/_next/static/chunks/64c0a5e3a0354479.js"],"default"]
+0:{"buildId":"6wNQhKWXFp74r-oPsBgNF","rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/demo-crm/_next/static/chunks/2662ff657666a8c6.js","async":true}],["$","script","script-1",{"src":"/demo-crm/_next/static/chunks/2ae3c29b84a2a333.js","async":true}]],["$","$L2",null,{"Component":"$3","slots":{"children":["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]},"serverProvidedParams":{"params":{},"promises":["$@6"]}}]]}],"loading":null,"isPartial":false}
 6:"$0:rsc:props:children:1:props:serverProvidedParams:params"
