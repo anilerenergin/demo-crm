@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export', // Enables static HTML export
+  trailingSlash: true, // Optional: ensures paths end with /
 };
 
-export default nextConfig;
+module.exports = nextConfig;
