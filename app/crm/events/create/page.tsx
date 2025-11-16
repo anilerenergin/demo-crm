@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getAllEvents } from "@/app/mockRequest";
 
 interface Ticket {
   name: string;
@@ -36,7 +37,12 @@ const AVAILABLE_CHANNELS = [
   "Resident Advisor",
 ];
 
-export default function CreateEventPage() {
+export async function generateStaticParams() {
+  const events = getAllEvents();
+  return events.map((event) => ({ slug: event.slug }));
+}
+
+export default function EventPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
 
   const [form, setForm] = useState<EventPayload>({
